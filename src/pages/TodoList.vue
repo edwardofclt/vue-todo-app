@@ -1,11 +1,11 @@
 <script setup>
-import TheWelcome from '../components/TheWelcome.vue'
+import { useTodoStore } from '@/stores/todo';
 </script>
 
 <template>
   <main>
     <input placeholder="Add a To Do Item" type="text" v-model="newTodo" @keyup.enter="addTodo">
-    <ul v-for="todo in todos.sort((a,b) => a.done > b.done ? 1 : -1)" :key="todo.id">
+    <ul v-for="(todo, idx) in todos.todoList" :key="idx">
       <li v-bind:class="todo.done ? 'done' : ''" v-on:click="todo.done = !todo.done"><span>{{ todo.text }}</span>
         <input type="checkbox" v-model="todo.done">
       </li>
@@ -52,20 +52,13 @@ main {
 export default {
   methods: {
     addTodo() {
-    this.todos.push({
-      id: this.todos.length + 1,
-      text: this.newTodo,
-      done: false
-    })
+    this.todos.add({text: this.newTodo, done: false})
     this.newTodo = ''
     },
   },
   data (){
     return {
-      todos: [
-        { id: 1, text: 'Learn Vue 3', done: true },
-        { id: 2, text: 'Build something awesome', done: false }
-      ]
+      todos: useTodoStore(),
     }
   }
 }
